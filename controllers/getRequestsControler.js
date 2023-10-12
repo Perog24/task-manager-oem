@@ -1,8 +1,8 @@
-const {pool} = require("../database/dbCreatePool.js");
+const {Task} = require('../models');
 
 async function getAllTasks(req, res, next) {
    try {
-      const [tasks] = await pool.query("SELECT * FROM tasks"); // повертає массив, требе диструктурізація  
+      const tasks = await Task.findAll();
    res.json({tasks: tasks});
    } catch (err) {
       next(err);
@@ -12,11 +12,11 @@ async function getAllTasks(req, res, next) {
 async function getTaskByID(req, res, next) {
    try {
    const tasksId = req.params.id
-   const [tasks] = await pool.query("SELECT * FROM tasks WHERE id = ?", [tasksId]); 
+   const tasks = await Task.findByPk(tasksId); 
    if (tasks.length === 0) {
       throw new Error('Task not found')
    }
-   res.json({task: tasks[0]});
+   res.json({task: tasks});
 } catch (err) {
    next(err)
 }
